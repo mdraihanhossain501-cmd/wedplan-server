@@ -4,6 +4,7 @@
   "description": "WedPlan wedding planning platform - Express API server",
   "main": "index.js",
   "scripts": {
+    "make-admin": "node scripts/make-admin.js",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
