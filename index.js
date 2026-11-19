@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { connectDB } from "./db.js";
 import { verifyJWT, requireRole } from "./middleware/auth.js";
+import servicesRouter from "./routes/services.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -28,6 +29,8 @@ app.get("/api/me", verifyJWT, (req, res) => {
 app.get("/api/admin/ping", verifyJWT, requireRole("admin"), (req, res) => {
   res.json({ message: "Hello admin" });
 });
+
+app.use("/api/services", servicesRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
