@@ -57,7 +57,7 @@ function validateService(body) {
 }
 
 // Adds vendor info and an isPremium flag to each service.
-function vendorStages() {
+export function vendorStages() {
   const now = new Date();
   return [
     {
