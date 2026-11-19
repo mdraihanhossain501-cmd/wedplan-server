@@ -4,6 +4,7 @@ import cors from "cors";
 import { connectDB } from "./db.js";
 import { verifyJWT, requireRole } from "./middleware/auth.js";
 import servicesRouter from "./routes/services.js";
+import bookingsRouter from "./routes/bookings.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -31,6 +32,7 @@ app.get("/api/admin/ping", verifyJWT, requireRole("admin"), (req, res) => {
 });
 
 app.use("/api/services", servicesRouter);
+app.use("/api/bookings", bookingsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
