@@ -7,6 +7,7 @@ import servicesRouter from "./routes/services.js";
 import bookingsRouter from "./routes/bookings.js";
 import adminRouter from "./routes/admin.js";
 import statsRouter from "./routes/stats.js";
+import paymentsRouter from "./routes/payments.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -32,6 +33,7 @@ app.use("/api/services", servicesRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/stats", statsRouter);
+app.use("/api/payments", paymentsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
