@@ -8,6 +8,7 @@ import bookingsRouter from "./routes/bookings.js";
 import adminRouter from "./routes/admin.js";
 import statsRouter from "./routes/stats.js";
 import paymentsRouter from "./routes/payments.js";
+import { stripeWebhook } from "./routes/stripeWebhook.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -18,6 +19,15 @@ app.use(
     credentials: true,
   })
 );
+
+// Stripe needs the raw body to verify the signature, so this route must be
+// registered BEFORE express.json().
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
