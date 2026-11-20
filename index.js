@@ -20,6 +20,18 @@ app.use(
   })
 );
 
+// Make sure the database is connected before any request is handled.
+// This matters on serverless hosting, where instances start on demand.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+    res.status(500).json({ message: "Database connection failed" });
+  }
+});
+
 // Stripe needs the raw body to verify the signature, so this route must be
 // registered BEFORE express.json().
 app.post(
@@ -54,13 +66,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal server error" });
 });
 
-connectDB()
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`WedPlan server listening on port ${port}`);
+// Locally we listen on a port. On Vercel the exported app runs as a function.
+if (!process.env.VERCEL) {
+  connectDB()
+    .then(() => {
+      app.listen(port, () => {
+        console.log(`WedPlan server listening on port ${port}`);
+      });
+    })
+    .catch((error) => {
+      console.error("MongoDB connection failed:", error.message);
+      process.exit(1);
     });
-  })
-  .catch((error) => {
-    console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
-  });
+}
+
+export default app;

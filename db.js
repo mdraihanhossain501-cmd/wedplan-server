@@ -11,8 +11,19 @@ const client = new MongoClient(process.env.MONGODB_URI, {
 
 export const db = client.db(process.env.DB_NAME || "wedplan");
 
-export async function connectDB() {
-  await client.connect();
-  await db.command({ ping: 1 });
-  console.log("Connected to MongoDB");
+// The connection promise is cached, so calling this many times is safe.
+let connecting = null;
+
+export function connectDB() {
+  if (!connecting) {
+    connecting = client
+      .connect()
+      .then(() => db.command({ ping: 1 }))
+      .then(() => console.log("Connected to MongoDB"))
+      .catch((error) => {
+        connecting = null;
+        throw error;
+      });
+  }
+  return connecting;
 }
